@@ -15,17 +15,34 @@ import { SafeAreaView, StyleSheet } from "react-native"
 //import ParImpar from './components/ParImpar'
 //import Familia from './components/relacao/Familia'
 //import Membro from './components/relacao/Membro'
-import UsuarioLogado from './components/UsuarioLogado'
+//import UsuarioLogado from './components/UsuarioLogado'
+//import ListaProdutos from './components/produtos/ListaProdutos'
+//import ListaProdutosV2 from './components/produtos/ListaProdutosV2'
+//import DigiteSeuNome from './components/DigiteSeuNome'
+//import FlexboxV1 from './components/layout/FlexboxV1'
+//import FlexboxV2 from './components/layout/FlexboxV2'
+//import FlexboxV3 from './components/layout/FlexboxV3'
+//import FlexboxV4 from './components/layout/FlexboxV4'
+import Mega from './components/mega/Mega'
 
 export default () => (
     <SafeAreaView style={style.App}>
         
+        
+        <Mega qtdeNumeros={12} />
+
+        {/*
+        <FlexboxV4 />
+        <FlexboxV3 />
+        <FlexboxV2 />
+        <FlexboxV1 />
+        <DigiteSeuNome />
+        <ListaProdutosV2 />
+        <ListaProdutos />
         <UsuarioLogado usuario={{nome: 'Gui', email: ''}}/>
         <UsuarioLogado usuario={{nome: 'Ana', email: 'ana@gui.com'}}/>
         <UsuarioLogado usuario={{}}/>
         <UsuarioLogado usuario={null}/>
-
-        {/*
         <Familia>
             <Membro nome="Bia" sobrenome="Arruda"/>
             <Membro nome="Carlos" sobrenome="Arruda"/>
