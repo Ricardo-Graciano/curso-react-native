@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import axios from 'axios'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
@@ -20,8 +21,8 @@ import { server, showError, showSuccess } from '../common'
 
 const initialState = {
     name: '',
-    email: 'gracianoooric@gmail.com',
-    password: '1234',
+    email: '',
+    password: '',
     confirmPassword: '',
     stageNew: false
 }
@@ -61,8 +62,9 @@ export default class Auth extends Component {
                 password: this.state.password
             })
 
+            AsyncStorage.setItem('userData', JSON.stringify(res.data))
             axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`
-            this.props.navigation.navigate('Home')
+            this.props.navigation.navigate('Home', res.data)
         } catch (e) {
             showError(e)
         }
