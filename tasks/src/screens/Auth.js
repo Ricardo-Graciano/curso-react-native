@@ -10,25 +10,76 @@ import {
     Alert
 } from 'react-native'
 
+import axios from 'axios'
+
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
 import AuthInput from '../components/AuthInput'
+
+import { server, showError, showSuccess } from '../common'
+
+const initialState = {
+    name: '',
+    email: 'gracianoooric@gmail.com',
+    password: '1234',
+    confirmPassword: '',
+    stageNew: false
+}
 export default class Auth extends Component {
 
-    state = {
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        stageNew: false
-    }
+    state = { ... initialState }
 
     signinOrSignup = () => {
-        if(this.state.stageNew) Alert.alert('Sucesso', 'Criar conta')
-        else Alert.alert('Sucesso', 'Logar')
+        if(this.state.stageNew) this.signup()
+        else this.signin()
+    }
+
+    signup = async () => {
+        try {
+            console.log("Est 1");
+            console.log(`${server}/signup`);
+            await axios.post(`${server}/signup`, {
+                name: this.state.name,
+                email: this.state.email,
+                password: this.state.password,
+                confirmPassword: this.state.confirmPassword,
+            })
+            console.log("Est 2");
+
+            showSuccess("Usuário cadastrado!")
+            this.setState({ ... initialState })
+        } catch (e) {
+            console.log(e);
+            showError(e)
+        }
+    }
+
+    signin = async () => {
+        try {
+            const res = await axios.post(`${server}/signin`, {
+                email: this.state.email,
+                password: this.state.password
+            })
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`
+            this.props.navigation.navigate('Home')
+        } catch (e) {
+            showError(e)
+        }
     }
 
     render() {
+        const validations = []
+        validations.push(this.state.email && this.state.email.includes('@'))
+        validations.push(this.state.password && this.state.password.length >= 4)
+
+        if(this.state.stageNew){
+            validations.push(this.state.name && this.state.name.trim().lengh >= 3)
+            validations.push(this.state.password === this.state.confirmPassword)
+        }
+
+        const validForm = validations.reduce((t, a) => t && a)
+
         return (
             <ImageBackground source={backgroundImage} style={styles.background}>
                 <Text style={styles.title}>Tasks</Text>
@@ -53,8 +104,9 @@ export default class Auth extends Component {
                             style={styles.input}  secureTextEntry={true}
                             onChangeText={confirmPassword => this.setState({confirmPassword})} />
                         }
-                    <TouchableOpacity onPress={this.signinOrSignup}>
-                        <View style={styles.button}>
+                    <TouchableOpacity onPress={this.signinOrSignup} 
+                        disabled={!validForm}>
+                        <View style={[styles.button, validForm ? {} : {backgroundColor: "#aaa"}]}>
                             <Text style={styles.buttonText}>
                                 {this.state.stageNew ? 'Registrar' : 'Entrar'}
                             </Text>
